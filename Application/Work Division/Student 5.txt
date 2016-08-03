@@ -1,0 +1,230 @@
+void editrecord()
+{
+    FILE *fpte ;
+    struct record record ;
+    char thetime[6],filename[14],choice;
+    int num,count=0;
+
+	editRecordAttractiveText();
+
+    do{
+    	cout<<"__________________________________________________________________________________\n\n"<<endl;
+        cout<<"\t Enter Date of the record (yyyy-mm-dd) : ";
+        fflush(stdin);
+        gets(filename);
+        cout<<"\t Enter the time(hh-mm)                 : ";
+        gets(thetime);
+        fpte = fopen ( filename, "rb+" ) ;
+
+        if ( fpte == NULL ){
+            cout<<"\t Record Don't Exist:" <<endl;
+            cout<<"\t Press Any Key to return back";
+            getch();
+            return;
+        }
+
+        while ( fread ( &record, sizeof ( record ), 1, fpte ) == 1 ){
+			if(strcmp(record.thetime,thetime)==0){
+				cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"<<endl;
+	            cout<<"\t Your Old Record was:"<<endl;
+	            cout<<"\t Title: "<<record.title<<endl;
+	            cout<<"\t Time: "<<record.thetime<<endl;
+	            cout<<"\t Place: "<<record.place<<endl;
+	            cout<<"\t Content: "<<record.content<<endl;
+	            cout<<"\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n"<<endl;
+
+	            cout<<"__________________________________________________________________________________\n\n"<<endl;
+	            cout<<"\n\tWhat would you like to edit?\n"<<endl;
+	            cout<<"\t 1. Title"<<endl;
+	            cout<<"\t 2. Time"<<endl;
+	            cout<<"\t 3. Place"<<endl;
+	            cout<<"\t 4. Content"<<endl;
+	            cout<<"\t 5. All of Above"<<endl;
+	            cout<<"\t 6. Go Back to Record Management Section."<<endl;
+	            do{
+	                cout<<"\t Enter Your Choice: ";
+	                fflush(stdin);
+	                cin>>num;
+	                fflush(stdin);
+	                switch(num){
+		                case 1:
+		                	cout<<"\t Enter Your New Title                  : ";
+		                    gets(record.title);
+		                    break;
+		                case 2:
+		                	cout<<"\n\t Enter Your New Time(hh-mm)            : ";
+		                    gets(record.thetime);
+		                    break;
+		                case 3:
+		                	cout<<"\n\t Enter New Place                       : ";
+		                    gets(record.place);
+		                    break;
+		                case 4:
+		                	cout<<"\n\t Enter New Content                     : ";
+		                    gets(record.content);
+		                    break;
+		                case 5:
+		                	cout<<"__________________________________________________________________________________\n\n"<<endl;
+		                	cout<<"\t Enter all the data as required        :\n"<<endl;
+							cout<<"\t Enter Your New Title                  : ";
+							gets(record.title);
+							cout<<"\n\t Enter Your New Time(hh-mm)            : ";
+							gets(record.thetime);
+							cout<<"\n\t Enter New Place                       : ";
+							gets(record.place);
+							cout<<"\n\t Enter New Content                     : ";
+							gets(record.content);
+							break;
+		                case 6:
+		                	cout<<"\t Press Any Key to Go Back...";
+		                    getch();
+		                    recordMenu();
+		                    return ;
+		                    break;
+		                default:
+		                	cout<<"\t You entered wrong option...\nPress any key to try again";
+		            		getch();
+		                    break;
+	                }
+	            }while(num<1||num>7);
+	            cout<<"__________________________________________________________________________________"<<endl;
+	            int size_of_record = sizeof(record);
+	            fseek(fpte, -size_of_record, SEEK_CUR);
+	            fwrite(&record,sizeof(record),1,fpte);
+	            fseek(fpte, -size_of_record, SEEK_CUR);
+	            fread(&record,sizeof(record),1,fpte);
+	            choice=5;
+	            break;
+        	}
+        }
+        if(choice==5){
+            system("cls");
+
+            cout<<"\n__________________________________________________________________________________\n\n"<<endl;
+            cout<<"\n\t ||| Editing Has Been Completed||| \n"<<endl;
+            cout<<"\n\t !Your New Record Is! \n"<<endl;
+            cout<<"\n\t Title   : "<<record.title<<endl;
+            cout<<"\n\t Time    : "<<record.thetime<<endl;
+            cout<<"\n\t Place   : "<<record.place<<endl;
+            cout<<"\n\t Content : "<<record.content<<endl;
+            cout<<"\n__________________________________________________________________________________"<<endl;
+
+            fclose(fpte);
+            cout<<"\n\n\tWould You like to Edit Another Record.(y/n) : "<<endl;
+            cin>>choice;
+            count++;
+        }else{
+        	cout<<"__________________________________________________________________________________\n\n"<<endl;
+            cout<<"\t The Record don't Exist\n"<<endl;
+            cout<<"\t Would You Like To Try Again...(y/n) : "<<endl;
+            cin>>choice;
+            cout<<"__________________________________________________________________________________"<<endl;
+        }
+    }while(choice=='Y'||choice=='y');
+
+
+    fclose ( fpte ) ;
+
+    cout<<"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"<<endl;
+    if(count==1)
+    	cout<<"\t <<count << File Is Edited..."<<endl;
+    else if(count>1)
+    	cout<<"\t << count << Files Are Edited.."<<endl;
+    else
+    	cout<<"\t No File Has been Edited..."<<endl;
+
+
+    cout<<"\t Press Any key to return to Records Management Section.";
+    getch();
+    recordMenu();
+}
+
+void deleterecord()
+{
+	FILE *fp,*fptr ;
+
+    struct record record ;
+    char filename[15],another = 'y' ,thetime[10];;
+    int choice,check;
+
+    deleteRecordAttractiveText();
+
+	while ( another == 'y' ){
+		cout<<"\n_________________________________________________________________________________"<<endl;
+        cout<<"\n\t How would you like to delete records? "<<endl;
+        cout<<"\t  [1] Delete Whole Record By Date?"<<endl;
+        cout<<"\t  [2] Delete Particular Record By Time?"<<endl;
+
+
+        do{
+        	cout<<"\n\t Enter your choice : ";
+ 			cin>>choice;
+ 			cout<<"_________________________________________________________________________________";
+                    switch(choice){
+                        case 1:
+	                        cout<<"\n\t Enter the date of record you want to delete[yyyy-mm-dd]: ";
+	                        fflush(stdin);
+	                        gets(filename);
+	                        fp = fopen (filename, "wb" ) ;
+	                        if ( fp == NULL ){
+	                            cout<<"\n\t The record you are trying to delete don't exist"<<endl;
+	                            cout<<"\t Press any key to return back";
+	                            getch();
+	                            return ;
+	                        }
+	                        fclose(fp);
+	                        remove(filename);
+	                        cout<<"\t Record Sucessfully deleted."<<endl;
+	                        cout<<"_________________________________________________________________________________"<<endl;
+	                        break;
+                        case 2:
+                            cout<<"\tEnter the date of record you want to delete[yyyy-mm-dd]: "<<endl;
+                            fflush(stdin);
+                            gets(filename);
+                            fp = fopen (filename, "rb" );
+                            if ( fp == NULL ){
+                                cout<<"\t The record you are trying don't actually exist."<<endl;
+                                cout<<" Press any key to return back....";
+                                getch();
+                                return ;
+                            }
+                            fptr=fopen("temp","wb");
+                            if(fptr==NULL){
+
+                                cout<<"There are a problem with record."<<endl;
+                                cout<<"Press any key to return back.";
+                                getch();
+                                return ;
+                            }
+                            cout<<"\t Enter the time of the record to be deleted(hh-mm): ";
+                            fflush(stdin);
+                            gets(thetime);
+                            while(fread(&record,sizeof(record),1,fp)==1){
+                                if(strcmp(record.thetime,thetime)!=0)
+                                fwrite(&record,sizeof(record),1,fptr);
+                            }
+                            fclose(fp);
+                            fclose(fptr);
+                            remove(filename);
+                            rename("temp",filename);
+                            cout<<"\t Particular record sucessfully deleted.."<<endl;
+                            break;
+
+                    default:
+                        cout<<"\n\t You have entered wrong choice"<<endl;
+                        break;
+            }
+        }while(choice<1||choice>2);
+
+        cout<<"\n_________________________________________________________________________________"<<endl;
+        cout<<"\n\t Would you like to delete another record(y/n): ";
+        fflush(stdin);
+        cin>>another;
+        cout<<"_________________________________________________________________________________\n\n"<<endl;
+
+	}
+	cout<<"\n\t Press any key to return to Records Management Section...";
+    getch();
+	recordMenu();
+	return;
+}

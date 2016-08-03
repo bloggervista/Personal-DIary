@@ -1,0 +1,147 @@
+void addrecord()
+{
+	FILE* fp;
+	char anotherRecord = 'Y', thetime[10],filename[15];
+	int choice;
+	struct record record;
+
+	addRecordAttractiveText();
+
+	cout<<"\n____________________________________________________________________________________"<<endl;
+	cout<<"\n\t Date of Record(yyyy-mm-dd)      :\t";
+	fflush(stdin);
+	gets(filename);
+
+	if ((fp=fopen(filename, "ab+")) == NULL){
+		if ((fp=fopen(filename, "wb+")) == NULL){
+		  cout<<"\n\t Please Enter Valid Data...";
+		  getch();
+		  return;
+		}
+	}
+
+	while (anotherRecord == 'Y' || anotherRecord == 'y')
+	{
+		choice = 0;
+		fflush(stdin);
+
+		cout<<"\t Time(hh-mm)                     :\t";
+		cin>> thetime;
+		rewind(fp);
+		while (fread(&record, sizeof(record), 1, fp) == 1){
+		  if (strcmp(record.thetime, thetime) == 0){
+		    cout<<"\n\t Sorry the record you are trying already exist.\n";
+		    choice = 1;
+		  }
+		}
+		if (choice == 0){
+		  strcpy(record.thetime, thetime);
+		  fflush(stdin);
+
+		  cout<<"\t Title                           :\t";
+		  gets(record.title);
+		  fflush(stdin);
+
+		  cout<<"\t Place                           :\t";
+		  gets(record.place);
+		  fflush(stdin);
+
+		  cout<<"\t Content                         :\t";
+		  gets(record.content);
+
+		  fwrite(&record, sizeof(record), 1, fp);
+		  cout<<"\n=========================================================================="<<endl;
+		  cout<<"\t Congrats . Your Record has Been Sucessfully Added"<<endl;
+		  cout<<"__________________________________________________________________________"<<endl;
+		}
+		cout<<"\n\n\t Do you wanna add another record (y/n) ? : ";
+		fflush(stdin);
+		anotherRecord = getchar();
+		cout<<"__________________________________________________________________________\n\n";
+
+	}
+	fclose(fp);
+	cout<<"\n\n\t Press Any Key to Return Back...";
+	getch();
+
+	recordMenu();
+	return;
+}
+
+void viewrecord()
+{
+    struct record record ;
+	FILE *fpte ;
+    char time[6],choice,filename[14];
+    int ch;
+
+	viewRecordAttractiveText();
+
+    do{
+    	cout<<"\n\n\t Enter the date of the record you want to view :\t";
+    	fflush(stdin);
+	 	gets(filename);
+	 	fpte = fopen ( filename, "rb" ) ;
+        if ( fpte == NULL ){
+        	cout<<"\n_________________________________________________________________________________"<<endl;
+            cout<<"\n\n\t The Record you are trying to view don't exist" <<endl ;
+            cout<<"\n\t You will be redirected to Records Management Section"<<endl;
+            progressBar(30);
+            recordMenu();
+            return ;
+        }
+
+        cout<<"\n_________________________________________________________________________________"<<endl;
+        cout<<"\n\t How would you like to view records? "<<endl;
+        cout<<"\t  [1] Record of Whole Day?"<<endl;
+        cout<<"\t  [2] Record of Given Time?"<<endl;
+        cout<<"\n\t  Enter your choice : ";
+        cin>>ch;
+        cout<<"\n_________________________________________________________________________________";
+
+
+        switch(ch){
+            case 1:
+                while ( fread ( &record, sizeof ( record ), 1, fpte ) == 1 ){
+                	cout<<"\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+                    cout<<"\n\t Title: "<<record.title<<endl;
+                    cout<<"\t Time: "<<record.thetime<<endl;
+                    cout<<"\t Place:"<<record.place<<endl;
+                    cout<<"\t Content: "<<record.content<<endl;
+                    cout<<"\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+                 }
+                 break;
+
+            case 2:
+ 				fflush(stdin);
+                cout<<"Enter the given time(hh-mm):"<<endl;
+                gets(time);
+                while ( fread ( &record, sizeof ( record ), 1, fpte ) == 1 ){
+					if(strcmp(record.thetime,time)==0){
+						cout<<"\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+						cout<<"\t Title: "<< record.title<<endl;
+						cout<<"\t Time: "<< record.thetime<<endl;
+	                    cout<<"\t Place: "<< record.place<<endl;
+	                    cout<<"\t Content: "<< record.content<<endl;
+	                    cout<<"\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+	                }
+                }
+                break;
+
+            default:
+            	cout<<"\t You typed wrong option?\n"<<endl;
+            	cout<<"\t We will reload view record option:"<<endl;
+            	progressBar(30);
+            	viewrecord();
+            	break;
+        }
+        cout<<"\n\t Would you like to View more records(y/n) : ";
+ 		fflush(stdin);
+        cin>>choice;
+    }while(choice=='Y'||choice=='y');
+
+    fclose(fpte) ;
+
+ 	recordMenu();
+    return ;
+}

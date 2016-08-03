@@ -1,0 +1,143 @@
+
+void about()
+
+{   system("cls");
+    cout<<"\n\n\n\n\n________________________________________________________________________________________________________\n"<<endl;
+	cout<<"\tPersonal Diary was done for fulfillment of  2nd semester project in Kathmandu University by \n\tCE 2015 batch";
+	cout<<"\tPersonal Diary is free to use and distribute but The right to modify the \n\tsoftware and upgrade is limited to project members only";
+	cout<<".Any suggestions and feedbacks regarding \n\tthe software are warmly welcomed.You can send us mail at\n\t";
+	cout<<"\t\t\t\t\t personaldiary@gmail.com\n\t";
+    cout <<"Any individual found misusing the software will be punished according to law"<<endl;
+    cout<<"\n\n\n\t\t\t" <<"(c)"<< " 2016 CE 2nd semester ALL RIGHTS RESERVED"<<endl;
+	cout<<"\n\n___________________________________________________________________________________________________________\n"<<endl;
+    cout<<"\t Press Any Key to return to Dashboard";
+    getch();
+    dashboardMenu();
+    return;
+}
+
+
+void view_all_username_password()
+{
+    system("cls");
+    char check;
+    char line[1024];
+    FILE *fp = fopen("accounts.dll","r");
+    struct user user;
+
+    cout<<"\n\n+++++++++++++++++++++++++++++++++++++++++++++++++++";
+    cout<<"\n\t !!! Senstive Information !!!\n\n\n"<<endl;
+    cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++"<<endl;
+
+    cout<<"\t You are trying to view too much sensitive information.\n";
+    cout<<"\t Are you sure you want to see such info (y/n)?";
+
+    check=getch();
+
+    if(check=='y' || check =='Y'){
+        if( fp == NULL ) {
+            return;
+        }
+        cout<<"\t Here are the Usernames and Password\n"<<endl;
+        cout<<"_______________________________________________________________\n\n\n"<<endl;
+        cout<<"\t\t Username: \t\t Password"<<endl;
+        cout<<"\t\t ________ \t\t ________"<<endl;
+
+        while ( fread ( &user, sizeof ( user ), 1, fp ) == 1 ){
+            cout<<"\n\t\t  "<<user.username;
+            cout<<"\t\t"<<user.password<<endl;
+        }
+        cout<<"\n_______________________________________________________________";
+    }else{
+        cout<<"So you don't want to see it . Redirecting you to Personal Diary Home \n\n";
+        progressBar(10);
+        dashboardMenu();
+    }
+
+    getch();
+    administrationMenu();
+    return;
+}
+
+
+
+void goToCoordinate(int x,int y)
+{
+    CursorPosition.X=x;
+    CursorPosition.Y=y;
+    SetConsoleCursorPosition(hConsole,CursorPosition);
+}
+void loading_screen(){
+    int percentage;
+    int i,j;
+    char block1=177,block2=219;
+
+    system("cls");
+
+    srand(time(NULL));
+    cout << "\n\t";
+     for(int i=14;i<95;i++){
+        goToCoordinate(i,13);cout << block1 ;
+
+     }
+     for(i=14,j=0;i<81,j<=80;i++,j++){
+         percentage=(j/80.0)*100;
+         goToCoordinate(46,14);SetConsoleTextAttribute(hConsole,8);cout << percentage << "%completed";    // use this for providing color in console
+         SetConsoleTextAttribute(hConsole,rand()%10);    // use this for providing color in console
+         goToCoordinate(i,13);cout << block2 ;
+         Sleep(50);
+     }
+}
+
+
+void progressBar(int noOfSec)
+{
+    int i;
+    cout<<"\n";
+    for(i=0;i<69;i++){
+        Sleep( noOfSec );
+        cout<<"~";
+    }
+    cout<<""<<endl;
+}
+int roundrect(int x, int y, int len, int ht, int rd, int col)
+{
+    getpalette(&p);
+    setcolor(col);
+    line(x, y + rd, x, y + ht - rd);
+    line(x + len, y + rd, x + len, y + ht - rd);
+    line(x + rd, y, x + len - rd, y);
+    line(x + rd, y + ht, x + len - rd, y + ht);
+    arc(x + rd, y + rd, 90, 180, rd);
+    arc(x + len - rd, y + rd, 0, 90, rd);
+    arc(x + rd, y + ht - rd, 180, 270, rd);
+    arc(x + len - rd, y + ht - rd, 270, 360, rd);
+    return 0;
+}
+int loading_bar(int x, int y, int len, int ht){
+    rectangle(x, y,x+len,y+ht);
+
+
+    delay(100);
+    setfillstyle(SOLID_FILL,RED);
+    for(int i=0;i<len;i++){
+        bar(x+1,y+1,x+i+1,y+ht);
+        delay(10);
+    }
+    return 0;
+}
+
+void exitingProgram()
+{
+    exitAttractiveText();
+
+    progressBar(50);
+    cout<<"_________________________________________________________________________________"<<endl;
+    cout<<"\n\tThanks for using the personal diary \n"<<endl;
+    cout<<" \t Closing this window....."<<endl;
+    cout<<"_________________________________________________________________________________"<<endl;
+    Sleep(500);
+    exit(0);
+    getch();
+    return ;
+}

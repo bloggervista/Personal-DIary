@@ -1,0 +1,225 @@
+
+struct user
+{
+    int id;
+	char username[30];
+    char password[30];
+};
+
+struct palettetype p, pal;
+
+
+
+int main()
+{
+
+    loginload();
+
+
+    int width;
+    int maxx=getwindowwidth();
+    int maxy=getwindowheight();
+
+    if((password())==1){
+        cleardevice();
+    }
+
+    settextstyle(8,0,2);
+    setcolor(15);
+    width = textwidth("Logged In Sucessfully");
+    outtextxy(maxx/2 - width/2,300,"Logged In Sucessfully");
+
+    loading_bar(maxx/2-100,400,200,20);
+
+    closegraph();
+
+    SetConsoleTextAttribute(hConsole,3);
+    dashboardMenu();
+}
+
+void loginload()
+{
+    int n, k;
+    setgraphicsmode();
+    int maxx=getwindowwidth();
+    int maxy=getwindowheight();
+    setcolor(4);
+    line(200, 167, 230, 90);
+    line(201, 167, 231, 90);
+    line(202, 167, 232, 90);
+    putpixel(231, 89, 4);
+    putpixel(233, 88, 4);
+    putpixel(202, 168, 14);
+    putpixel(232, 89, 4);
+    putpixel(232, 88, 4);
+    putpixel(233, 87, 4);
+    putpixel(234, 87, 4);
+    line(235, 87, 325, 87);
+    putpixel(233, 89, 4);
+    putpixel(234, 88, 4);
+    putpixel(235, 87, 4);
+    putpixel(236, 87, 4);
+    roundrect(199, 165, 100, 25, 7, 4);
+    roundrect(200, 166, 100, 23, 7, 4);
+    setfillstyle(1, 0);
+    bar(295, 165, 295 + 10, 165 + 25);
+    setcolor(4);
+    line(293, 165, 293, 185);
+    line(200, 185, 293, 185);
+    line(293, 185, 324, 108);
+    line(323 + 1, 90 - 1, 323 + 1, 105 + 3);
+    line(295, 165, 325, 88);
+    line(294, 165, 324, 88);
+    line(295, 189, 328, 108);
+    line(296, 189, 329, 108);
+    line(325, 108, 329, 108);
+    setfillstyle(1, 15);
+    floodfill(203, 169, 4);
+    floodfill(299, 165, 4);
+    setfillstyle(1, 4);
+    floodfill(213, 159, 4);
+    setfillstyle(1, 12);
+    floodfill(304, 159, 4);
+    setcolor(0);
+
+    delay(500);
+
+    settextstyle(10, 0, 4);
+    setcolor(11);
+
+
+    outtextxy(200, 300,"Welcome ");
+    delay(200);
+    outtextxy(350, 300,"To ");
+    delay(200);
+    outtextxy(400, 300,"Personal ");
+    delay(200);
+    outtextxy(570, 300,"Diary ");
+
+
+    delay(1000);
+    settextstyle(8, 0, 1);
+    setcolor(14);
+    int t_width = textwidth("Thanks To Dr. Gajendra Sharma");
+    outtextxy(maxx/2 - t_width/2, 500, "Thanks To Dr. Gajendra Sharma");
+
+    delay(2000);
+
+    loading_bar((maxx/2)-100,400,200,20);
+    cleardevice();
+}
+
+
+int password(){
+    Password:
+	char username[50],password[50];
+	int i=0,j=0,width,passwordCord=0;
+
+
+    int maxx=getwindowwidth();
+    int maxy=getwindowheight();
+
+
+    settextstyle(10,0,8);
+    setcolor(3);
+    width=textwidth("Personal Diary");
+    outtextxy(maxx/2 - width/2,150,"Personal Diary");
+
+
+    settextstyle(8,0,2);
+    setcolor(15);
+    width = textwidth("Enter Your Password");
+    outtextxy(maxx/2 - width/2,300,"Enter Your Password");
+
+    setcolor(14);
+    rectangle(maxx/2-120,350,maxx/2+120,380 );
+
+        i = 0;
+        password[0] = getch();
+        width=textwidth("X");
+
+        while (password[i] != '\r'){
+            if(i<0){
+                i=0;
+            }
+            if (!(password[i] == '\b')){
+                    outtextxy(298+i*15,356,"X");
+                    passwordCord=298+i*15+width;
+                    i++;
+                password[i] = getch();
+            }
+            else{
+                if(passwordCord>300){
+                    outtextxy(passwordCord -15+2,356,"\b");
+                    passwordCord=passwordCord-15;
+                }
+
+                if(i!=0){
+                    i--;
+                }
+
+                password[i] = getch();
+            }
+        }
+        password[i] = '\0';
+
+
+        char real_password[100]="docse";
+        if(strcmp(password,real_password)==0){
+			return 1;
+		}else{
+            settextstyle(8,0,1);
+            setcolor(4);
+            width = textwidth("Wrong Password Entered");
+            outtextxy(maxx/2 - width/2,400,"Wrong Password Entered");
+            delay(3000);
+            cleardevice();
+            goto Password;
+		}
+
+    return 0;
+
+}
+void dashboardMenu()
+{
+	int select;
+	dashboardAttractiveText();
+
+	while (1)
+	{
+		cout<<"\n\n!!! Welcome to Personal Dairy Dashboard!!!\n"<<endl;
+		cout<<"======================================"<<endl;
+
+		cout<<"\t[1] Notes"<<endl;
+		cout<<"\t[2] Administration"<<endl;
+		cout<<"\t[3] About"<<endl;
+		cout<<"\t[4] Exit"<<endl;
+		cout<<"\n\t    Enter Your Option: ";
+
+		cin>> select;
+
+		switch(select)
+		{
+			case 1:
+				recordMenu();
+				break;
+			case 2:
+				administrationMenu();
+				break;
+			case 3:
+				about();
+				break;
+			case 4:
+				exitingProgram();
+				break;
+			default:
+				cout<<"\t    Sorry you entered wrong option.."<<endl;
+				cout<<"\t    Press any key to try again to retry at dashboard menu.";
+				getch();
+				dashboardMenu();
+				break;
+		}
+	}
+	dashboardMenu();
+	return;
+}
